@@ -1,0 +1,57 @@
+body {
+  font-family: 'Source Sans Pro', 'Trebuchet MS', 'Lucida Grande', 'Bitstream Vera Sans', 'Helvetica Neue', sans-serif;
+  margin: 0;
+  color: #293c4b;
+  background: #fcd124;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 10px;
+}
+
+img {
+  margin: 20px 0;
+  max-width: 200px;
+}
+
+.result-ball {
+  min-width: 22px;
+  line-height: 22px;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 14px;
+  padding: 5px;
+  margin: 5px;
+  display: inline-block;
+  font-family: "arial";
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.result-ball:hover {
+  transform: scale(1.2);
+  background-color: #ffe600;
+}
+
+.result-ball.is-checked {
+  background: #e60000;
+  color: #fff;
+}
+
+.board-container {
+  width: 420px;
+}
+
+.board {
+  margin-bottom: 20px;
+}
+
+.board.isValid {
+  background: #fac000;
+}
+
+.keno-header {
+  padding: 5px 0;
+  color: #e60000;
+  margin: 0;
+  border-bottom: 1px solid #e60000;
+  font-size: 18px;
+}
