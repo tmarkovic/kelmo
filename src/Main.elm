@@ -1,9 +1,9 @@
 module Main exposing (..)
 
-import Html exposing (Html, button, div, h1, img, text)
-import Html.Attributes exposing (class, classList, src)
+import Html exposing (Html, a, button, div, h1, header, img, nav, text)
+import Html.Attributes exposing (alt, attribute, class, classList, href, id, src, type_, width)
 import Html.Events exposing (onClick)
-import Random exposing (generate, list, int)
+import Random exposing (generate, int, list)
 
 
 ---- MODEL ----
@@ -60,7 +60,7 @@ formatKenoLevel : Int -> String
 formatKenoLevel kenoLevel =
     case kenoLevel of
         0 ->
-            "Keno"
+            "Välj 1 - 11 nummer"
 
         _ ->
             "Keno " ++ toString kenoLevel
@@ -104,7 +104,7 @@ toggleBall chosen board number =
             else
                 t
     in
-        ( { model | boards = List.map updateBoard model.boards }, Cmd.none )
+    ( { model | boards = List.map updateBoard model.boards }, Cmd.none )
 
 
 
@@ -136,22 +136,63 @@ renderBoard board =
         ballItems =
             List.map (renderBall board) board.balls
     in
-        div []
-            [ renderKenoLevel <| formatKenoLevel <| countChecked board.balls
-            , div
-                [ classList
-                    [ ( "board", True )
-                    , ( "isValid", board.balls |> List.any (\x -> x.isChecked) )
-                    ]
+    div []
+        [ renderKenoLevel <| formatKenoLevel <| countChecked board.balls
+        , div
+            [ classList
+                [ ( "board", True )
+                , ( "isValid", board.balls |> List.any (\x -> x.isChecked) )
                 ]
-                ballItems
             ]
+            ballItems
+        , div [ class "board-buttons" ]
+            [ button [ class "btn btn-300 btn-transparent-default" ]
+                [ text "Rensa" ]
+            , button [ class "btn btn-300 btn-transparent-default", onClick (Huxflux board) ]
+                [ text "HuxFlux" ]
+            ]
+        ]
 
 
 view : Model -> Html Msg
 view model =
-    div [ class "boards" ]
-        (List.map renderBoard model.boards)
+    div [ class "container" ]
+        [ header [ class "header" ]
+            [ nav [ class "nav-container" ]
+                [ div [ class "nav-items" ]
+                    [ a [ class "nav-item", href "" ]
+                        [ text "Start" ]
+                    , a [ class "nav-item", href "" ]
+                        [ text "Spel" ]
+                    , a [ class "nav-item", href "" ]
+                        [ text "Arenan" ]
+                    , a [ class "nav-item", href "" ]
+                        [ text "Resultat" ]
+                    , a [ class "nav-item", href "" ]
+                        [ text "Sportservice" ]
+                    , a [ class "nav-item", href "" ]
+                        [ text "Mer" ]
+                    , a [ class "nav-item", href "" ]
+                        [ text "Hjälp" ]
+                    , a [ class "nav-item", href "" ]
+                        [ text "Mina Spel" ]
+                    , a [ class "nav-item", href "" ]
+                        [ text "Bli Kund" ]
+                    , a [ class "nav-item", href "" ]
+                        [ text "Logga in" ]
+                    ]
+                ]
+            , div [ class "header-container" ]
+                [ img [ width 220, src "https://om.svenskaspel.se/AnnualReport/2016/globalassets/spelloggor/svs_keno.png" ] [] ]
+            , div [ class "game-info" ]
+                [ text "Spelstopp: 18:25" ]
+            ]
+        , div [ class "content" ]
+            [ div
+                [ class "boards" ]
+                (List.map renderBoard model.boards)
+            ]
+        ]
 
 
 
