@@ -12,43 +12,51 @@ img {
   max-width: 200px;
 }
 
-.result-ball {
-  min-width: 22px;
-  line-height: 22px;
-  border-radius: 50%;
-  text-align: center;
-  font-size: 14px;
-  padding: 5px;
-  margin: 5px;
-  display: inline-block;
-  font-family: "arial";
-  cursor: pointer;
-  transition: all 0.1s;
-}
-
-.result-ball:hover {
-  transform: scale(1.2);
-  background-color: #ffe600;
-}
-
-.result-ball.is-checked {
-  background: #e60000;
-  color: #fff;
-}
-
-.board-container {
-  width: 420px;
-}
-
-.board {
-  margin-bottom: 20px;
-}
-
 .board.isValid {
   background: #fac000;
 }
 
+.boards {
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-column-gap: 20px;
+  grid-row-gap: 20px;
+}
+
+.board {
+  display:grid;
+  grid-template-columns: repeat(10, 32px);
+    grid-template-rows: repeat(8, 32px);
+  justify-content: space-evenly;
+  grid-column-gap: 5px;
+  grid-row-gap: 5px;
+  
+  
+}
+.ball {
+  display: grid;
+  align-content:center;
+  text-align: center;
+  border-radius: 50%;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.ball:hover {
+  transform: scale(1.2);
+  background-color: #ffe600;
+}
+
+.ball.is-checked {
+  background: #e60000;
+  color: #fff;
+}
+
 .keno-header {
+  grid-column: span 10;
   padding: 5px 0;
   color: #e60000;
   margin: 0;
