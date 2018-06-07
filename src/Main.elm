@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (Html, a, button, div, h1, header, img, nav, text)
-import Html.Attributes exposing (alt, attribute, class, classList, href, id, src, type_, width)
+import Html.Attributes exposing (alt, attribute, class, classList, disabled, href, id, src, type_, width)
 import Html.Events exposing (onClick)
 import Random exposing (generate, int, list)
 
@@ -136,7 +136,7 @@ renderBoard board =
         ballItems =
             List.map (renderBall board) board.balls
     in
-    div []
+    div [ class "board-container" ]
         [ renderKenoLevel <| formatKenoLevel <| countChecked board.balls
         , div
             [ classList
@@ -146,9 +146,9 @@ renderBoard board =
             ]
             ballItems
         , div [ class "board-buttons" ]
-            [ button [ class "btn btn-300 btn-transparent-default" ]
+            [ button [ class "btn btn-300 btn-transparent-default resetBtn", disabled True ]
                 [ text "Rensa" ]
-            , button [ class "btn btn-300 btn-transparent-default", onClick (Huxflux board) ]
+            , button [ class "btn btn-300 btn-transparent-default huxfluxBtn", disabled True, onClick (Huxflux board) ]
                 [ text "HuxFlux" ]
             ]
         ]
@@ -162,8 +162,8 @@ view model =
                 [ div [ class "nav-items" ]
                     [ a [ class "nav-item", href "" ]
                         [ text "Start" ]
-                    , a [ class "nav-item", href "" ]
-                        [ text "Spel" ]
+                    , a [ class "nav-item active", href "" ]
+                        [ text "Spela" ]
                     , a [ class "nav-item", href "" ]
                         [ text "Arenan" ]
                     , a [ class "nav-item", href "" ]
