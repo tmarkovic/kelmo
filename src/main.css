@@ -1,7 +1,6 @@
 @import url('button.css');
 body {
-  font-family: "Source Sans Pro", "Trebuchet MS", "Lucida Grande",
-    "Bitstream Vera Sans", "Helvetica Neue", sans-serif;
+  font-family: "Source Sans Pro", "Trebuchet MS", "Lucida Grande", "Bitstream Vera Sans", "Helvetica Neue", sans-serif;
   color: #293c4b;
   background: #fcd124;
   font-family: Arial, Helvetica, sans-serif;
@@ -40,6 +39,7 @@ body {
   grid-template-rows: 100%;
   max-width: 1357px;
 }
+
 .nav-items a {
   display: grid;
   padding: 0 12px;
@@ -64,11 +64,11 @@ body {
   background-color: rgba(255, 255, 255, 0.1);
   color: #fff;
 }
+
 .boards {
   display: grid;
   grid-template-columns: repeat(3, 400px);
   grid-template-rows: repeat(2, 1fr);
-
 }
 
 .board {
@@ -93,6 +93,22 @@ body {
   transition: all 0.1s;
 }
 
+.board-number {
+  background: #FFF;
+  align-content: center;
+  text-align: center;
+  border-radius: 50%;
+  color: #e60000;
+  height: 40px;
+  width: 40px;
+  line-height: 42px;
+  padding: 0;
+  vertical-align: center;
+  font-size: 18px;
+  font-weight: 400;
+  font-family: Arial, sans-serif;
+}
+
 .ball:hover {
   transform: scale(1.05);
   background-color: #ffe600;
@@ -104,13 +120,19 @@ body {
 }
 
 .keno-header {
-  grid-column: span 10;
   padding: 5px 0;
   color: #e60000;
   margin: 0;
   border-bottom: 1px solid #e60000;
+  display: grid;
+  align-content: end;
+}
+
+.keno-header>p {
   font-size: 18px;
   font-weight: 400;
+  margin: 0;
+  line-height: 32px;
 }
 
 .game-info {
@@ -127,13 +149,77 @@ body {
 .board-container {
   border-right: 1px solid #fbe64d;
   border-bottom: 1px solid #fbe64d;
-
-  padding: 24px;
+  display: grid;
+  grid-template-rows: 1fr 3fr 1fr;
+  padding: 12px 24px;
 }
 
 .board-buttons {
-  margin-top: 48px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-column-gap: 5px;
+  align-self: center;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+}
+
+.win-plan {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 24px;
+}
+
+.win-plan-table {
+  margin-top: 50px;
+  font-size: 12px;
+}
+
+.win-plan-table-header {
+  padding: 10px 20px;
+  text-align: center;
+  background: #e1e1e5;
+  border-bottom: 1px solid #afafb3;
+}
+
+.win-plan-table-body {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: repeat(12, 1fr);
+  grid-row-gap: 5px;
+  padding: 10px 20px;
+  background: #FFF;
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.win-plan-table-footer {
+  padding: 10px 20px;
+  text-align: center;
+  background: #e1e1e5;
+  border-top: 1px solid #afafb3;
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.win-plan-table-header>p {
+  font-weight: 700;
+  margin: 0;
+}
+
+.right {
+  float: right;
+}
+
+.left {
+  float: left;
+}
+
+.clear-fix {
+  clear: both;
+}
+
+.f-right {
+  text-align: right;
 }
