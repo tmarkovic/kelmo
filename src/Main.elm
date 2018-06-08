@@ -3,7 +3,9 @@ module Main exposing (..)
 import Html exposing (Html, a, aside, b, button, div, h1, header, img, nav, p, span, text)
 import Html.Attributes exposing (alt, attribute, class, classList, disabled, href, id, src, type_, width)
 import Html.Events exposing (onClick)
-import Random exposing (generate, int, list)
+import List exposing (any, filter, length, map, member, range, take)
+import Random exposing (generate)
+import Random.List exposing (shuffle)
 
 
 ---- MODEL ----
@@ -31,13 +33,13 @@ model =
 init : ( Model, Cmd Msg )
 init =
     ( { boards =
-            List.range 1 6
-                |> List.map
+            range 1 6
+                |> map
                     (\id ->
                         { id = id
                         , balls =
-                            List.range 1 70
-                                |> List.map (\x -> { number = x, isChecked = False, isChosen = False })
+                            range 1 70
+                                |> map (\x -> { number = x, isChecked = False, isChosen = False })
                         }
                     )
       }
@@ -52,8 +54,8 @@ init =
 countChecked : List Ball -> Int
 countChecked balls =
     balls
-        |> List.filter (\x -> x.isChecked == True)
-        |> List.length
+        |> filter (\x -> x.isChecked == True)
+        |> length
 
 
 isValid : List Ball -> Bool
@@ -76,40 +78,67 @@ formatKenoLevel kenoLevel =
 
 
 type Msg
-    = ToggleBall Bool Board Int
+    = ToggleBall Bool Board Int (List Int)
+    | Reset Board
     | Huxflux Board
-    | RandomBalls Board (List Int)
+
+
+updateBalls : (Ball -> Ball) -> Int -> Board -> Board
+updateBalls updateBall id t =
+    if t.id == id then
+        { t | balls = map updateBall t.balls }
+    else
+        t
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ToggleBall chosen board number ->
-            toggleBall chosen board number
+        ToggleBall chosen board check numbers ->
+            let
+                limitedNumbers =
+                    take check numbers
+
+                toggleBalls b =
+                    if (not chosen || b.isChecked || countChecked board.balls < 11) && member b.number limitedNumbers then
+                        { b | isChecked = not b.isChecked, isChosen = not b.isChecked && chosen }
+                    else
+                        b
+            in
+            ( { model | boards = map (updateBalls toggleBalls board.id) model.boards }, Cmd.none )
+
+        Reset board ->
+            ( { model
+                | boards =
+                    map
+                        (updateBalls (\x -> { x | isChecked = False, isChosen = False }) board.id)
+                        model.boards
+              }
+            , Cmd.none
+            )
 
         Huxflux board ->
-            ( model, generate (RandomBalls board) (list 5 (int 0 100)) )
-
-        RandomBalls board balls ->
-            ( model, Cmd.none )
-
-
-toggleBall : Bool -> Board -> Int -> ( Model, Cmd Msg )
-toggleBall chosen board number =
-    let
-        updateBall b =
-            if b.number == number then
-                { b | isChecked = not b.isChecked, isChosen = chosen }
-            else
-                b
-
-        updateBoard t =
-            if t.id == board.id && (board.balls |> List.filter (\x -> x.isChecked) |> List.length) < 11 then
-                { t | balls = List.map updateBall t.balls }
-            else
-                t
-    in
-    ( { model | boards = List.map updateBoard model.boards }, Cmd.none )
+            ( { model
+                | boards =
+                    map
+                        (updateBalls
+                            (\x ->
+                                if not x.isChosen then
+                                    { x | isChecked = False }
+                                else
+                                    x
+                            )
+                            board.id
+                        )
+                        model.boards
+              }
+            , generate (ToggleBall False board (11 - (board.balls |> filter (\x -> x.isChosen) |> length)))
+                (board.balls
+                    |> filter (\x -> not x.isChosen)
+                    |> map (\x -> x.number)
+                    |> shuffle
+                )
+            )
 
 
 
@@ -123,7 +152,7 @@ renderBall board ball =
             [ ( "ball", True )
             , ( "is-checked", ball.isChecked )
             ]
-        , onClick (ToggleBall True board ball.number)
+        , onClick (ToggleBall True board 1 [ ball.number ])
         ]
         [ toString ball.number
             |> text
@@ -142,21 +171,21 @@ renderBoard : Board -> Html Msg
 renderBoard board =
     let
         ballItems =
-            List.map (renderBall board) board.balls
+            map (renderBall board) board.balls
     in
     div [ class "board-container" ]
-        [ renderKenoLevel (formatKenoLevel (countChecked board.balls)) (toString board.id)
+        [ renderKenoLevel <| formatKenoLevel <| countChecked board.balls
         , div
             [ classList
                 [ ( "board", True )
-                , ( "isValid", isValid board.balls )
+                , ( "isValid", board.balls |> any (\x -> x.isChecked) )
                 ]
             ]
             ballItems
         , div [ class "board-buttons" ]
-            [ button [ class "btn btn-300 btn-transparent-default resetBtn", disabled (isValid board.balls) ]
+            [ button [ class "btn btn-300 btn-transparent-default resetBtn", onClick (Reset board) ]
                 [ text "Rensa" ]
-            , button [ class "btn btn-300 btn-transparent-default huxfluxBtn", disabled True, onClick (Huxflux board) ]
+            , button [ class "btn btn-300 btn-transparent-default huxfluxBtn", onClick (Huxflux board) ]
                 [ text "HuxFlux" ]
             ]
         ]
@@ -198,7 +227,7 @@ view model =
         , div [ class "content" ]
             [ div
                 [ class "boards" ]
-                (List.map renderBoard model.boards)
+                (map renderBoard model.boards)
             , aside
                 [ class "win-plan" ]
                 [ div
