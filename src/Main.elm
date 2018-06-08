@@ -74,8 +74,8 @@ formatKenoLevel kenoLevel =
 
 type Msg
     = ToggleBall Bool Board Int (List Int)
+    | Reset Board
     | Huxflux Board
-    | RandomBalls Board (List Int)
 
 
 updateBalls : (Ball -> Ball) -> Int -> Board -> Board
@@ -90,17 +90,27 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ToggleBall chosen board check numbers ->
-    let
+            let
                 limitedNumbers =
                     take check numbers
 
                 toggleBalls b =
                     if (not chosen || b.isChecked || (countChecked board.balls) < 11) && (member b.number limitedNumbers) then
                         { b | isChecked = not b.isChecked, isChosen = (not b.isChecked) && chosen }
-            else
-                b
+                    else
+                        b
             in
                 ( { model | boards = map (updateBalls toggleBalls board.id) model.boards }, Cmd.none )
+
+        Reset board ->
+            ( { model
+                | boards =
+                    map
+                        (updateBalls (\x -> { x | isChecked = False, isChosen = False }) board.id)
+                        model.boards
+              }
+            , Cmd.none
+            )
 
         Huxflux board ->
             ( { model
@@ -110,7 +120,7 @@ update msg model =
                             (\x ->
                                 if not x.isChosen then
                                     { x | isChecked = False }
-            else
+                                else
                                     x
                             )
                             board.id
@@ -155,22 +165,22 @@ renderBoard board =
         ballItems =
             map (renderBall board) board.balls
     in
-    div [ class "board-container" ]
-        [ renderKenoLevel <| formatKenoLevel <| countChecked board.balls
-        , div
-            [ classList
-                [ ( "board", True )
+        div [ class "board-container" ]
+            [ renderKenoLevel <| formatKenoLevel <| countChecked board.balls
+            , div
+                [ classList
+                    [ ( "board", True )
                     , ( "isValid", board.balls |> any (\x -> x.isChecked) )
+                    ]
+                ]
+                ballItems
+            , div [ class "board-buttons" ]
+                [ button [ class "btn btn-300 btn-transparent-default resetBtn", onClick (Reset board) ]
+                    [ text "Rensa" ]
+                , button [ class "btn btn-300 btn-transparent-default huxfluxBtn", onClick (Huxflux board) ]
+                    [ text "HuxFlux" ]
                 ]
             ]
-            ballItems
-        , div [ class "board-buttons" ]
-                [ button [ class "btn btn-300 btn-transparent-default resetBtn" ]
-                [ text "Rensa" ]
-                , button [ class "btn btn-300 btn-transparent-default huxfluxBtn", onClick (Huxflux board) ]
-                [ text "HuxFlux" ]
-            ]
-        ]
 
 
 view : Model -> Html Msg
