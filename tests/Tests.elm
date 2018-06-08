@@ -13,14 +13,14 @@ all =
     describe "Utils"
         [ test "Format Keno level 0" <|
             \_ ->
-                Expect.equal "Keno" (formatKenoLevel 0)
+                Expect.equal "Välj 1 - 11 nummer" (formatKenoLevel 0)
         , test "Format Keno level 1" <|
             \_ ->
                 Expect.equal "Keno 1" (formatKenoLevel 1)
         , test "Count checked 1" <|
             \_ ->
-                Expect.equal 1 (countChecked [ { number = 1, isChecked = False }, { number = 1, isChecked = True } ])
+                Expect.equal 1 (countChecked [ { number = 1, isChecked = False, isChosen = False }, { number = 1, isChecked = True, isChosen = True } ])
         , test "Count checked 0" <|
             \_ ->
-                Expect.equal 0 (countChecked [ { number = 1, isChecked = False } ])
+                Expect.equal 0 (countChecked [ { number = 1, isChecked = False, isChosen = False } ])
         ]
