@@ -105,7 +105,7 @@ update msg model =
                     else
                         b
             in
-            ( { model | boards = map (updateBalls toggleBalls board.id) model.boards }, Cmd.none )
+                ( { model | boards = map (updateBalls toggleBalls board.id) model.boards }, Cmd.none )
 
         Reset board ->
             ( { model
@@ -160,7 +160,7 @@ renderBall board ball =
 
 
 renderKenoLevel : String -> String -> Html Msg
-renderKenoLevel level boardNumber =
+renderKenoLevel boardNumber level =
     div [ class "keno-header" ]
         [ p [] [ text level, div [ class "board-number right" ] [ text boardNumber ] ]
         , span [] [ text "Kung Keno" ]
@@ -173,22 +173,22 @@ renderBoard board =
         ballItems =
             map (renderBall board) board.balls
     in
-    div [ class "board-container" ]
-        [ renderKenoLevel <| formatKenoLevel <| countChecked board.balls
-        , div
-            [ classList
-                [ ( "board", True )
-                , ( "isValid", board.balls |> any (\x -> x.isChecked) )
+        div [ class "board-container" ]
+            [ (renderKenoLevel (toString board.id)) <| formatKenoLevel <| countChecked board.balls
+            , div
+                [ classList
+                    [ ( "board", True )
+                    , ( "isValid", board.balls |> any (\x -> x.isChecked) )
+                    ]
+                ]
+                ballItems
+            , div [ class "board-buttons" ]
+                [ button [ class "btn btn-300 btn-transparent-default resetBtn", onClick (Reset board) ]
+                    [ text "Rensa" ]
+                , button [ class "btn btn-300 btn-transparent-default huxfluxBtn", onClick (Huxflux board) ]
+                    [ text "HuxFlux" ]
                 ]
             ]
-            ballItems
-        , div [ class "board-buttons" ]
-            [ button [ class "btn btn-300 btn-transparent-default resetBtn", onClick (Reset board) ]
-                [ text "Rensa" ]
-            , button [ class "btn btn-300 btn-transparent-default huxfluxBtn", onClick (Huxflux board) ]
-                [ text "HuxFlux" ]
-            ]
-        ]
 
 
 view : Model -> Html Msg
