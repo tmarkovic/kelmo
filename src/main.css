@@ -79,6 +79,12 @@ body {
   grid-column-gap: 1%;
   grid-row-gap: 1%;
   padding: 2%;
+  background: rgba(0,0,0,0);
+  transition: all 0.3s ease-in;
+}
+
+.board.isValid {
+  background: #fac000;
 }
 
 .ball {

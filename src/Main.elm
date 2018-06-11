@@ -1,11 +1,13 @@
 module Main exposing (..)
 
+import Header exposing (renderHeader)
 import Html exposing (Html, a, aside, b, button, div, h1, header, img, nav, p, span, text)
-import Html.Attributes exposing (alt, attribute, class, classList, disabled, href, id, src, type_, width)
+import Html.Attributes exposing (alt, attribute, class, classList, disabled, href, id, src, style, type_, width)
 import Html.Events exposing (onClick)
 import List exposing (any, filter, length, map, member, range, take)
 import Random exposing (generate)
 import Random.List exposing (shuffle)
+import WinPlan exposing (renderWinPlan)
 
 
 ---- MODEL ----
@@ -105,7 +107,7 @@ update msg model =
                     else
                         b
             in
-                ( { model | boards = map (updateBalls toggleBalls board.id) model.boards }, Cmd.none )
+            ( { model | boards = map (updateBalls toggleBalls board.id) model.boards }, Cmd.none )
 
         Reset board ->
             ( { model
@@ -173,112 +175,33 @@ renderBoard board =
         ballItems =
             map (renderBall board) board.balls
     in
-        div [ class "board-container" ]
-            [ (renderKenoLevel (toString board.id)) <| formatKenoLevel <| countChecked board.balls
-            , div
-                [ classList
-                    [ ( "board", True )
-                    , ( "isValid", board.balls |> any (\x -> x.isChecked) )
-                    ]
-                ]
-                ballItems
-            , div [ class "board-buttons" ]
-                [ button [ class "btn btn-300 btn-transparent-default resetBtn", onClick (Reset board) ]
-                    [ text "Rensa" ]
-                , button [ class "btn btn-300 btn-transparent-default huxfluxBtn", onClick (Huxflux board) ]
-                    [ text "HuxFlux" ]
+    div [ class "board-container" ]
+        [ renderKenoLevel (toString board.id) <| formatKenoLevel <| countChecked board.balls
+        , div
+            [ classList
+                [ ( "board", True )
+                , ( "isValid", board.balls |> any (\x -> x.isChecked) )
                 ]
             ]
+            ballItems
+        , div [ class "board-buttons" ]
+            [ button [ class "btn btn-300 btn-transparent-default resetBtn", onClick (Reset board) ]
+                [ text "Rensa" ]
+            , button [ class "btn btn-300 btn-transparent-default huxfluxBtn", onClick (Huxflux board) ]
+                [ text "HuxFlux" ]
+            ]
+        ]
 
 
 view : Model -> Html Msg
 view model =
     div [ class "container" ]
-        [ header [ class "header" ]
-            [ nav [ class "nav-container" ]
-                [ div [ class "nav-items" ]
-                    [ a [ class "nav-item", href "" ]
-                        [ text "Start" ]
-                    , a [ class "nav-item active", href "" ]
-                        [ text "Spela" ]
-                    , a [ class "nav-item", href "" ]
-                        [ text "Arenan" ]
-                    , a [ class "nav-item", href "" ]
-                        [ text "Resultat" ]
-                    , a [ class "nav-item", href "" ]
-                        [ text "Sportservice" ]
-                    , a [ class "nav-item", href "" ]
-                        [ text "Mer" ]
-                    , a [ class "nav-item", href "" ]
-                        [ text "Hjälp" ]
-                    , a [ class "nav-item", href "" ]
-                        [ text "Mina Spel" ]
-                    , a [ class "nav-item", href "" ]
-                        [ text "Bli Kund" ]
-                    , a [ class "nav-item", href "" ]
-                        [ text "Logga in" ]
-                    ]
-                ]
-            , div [ class "header-container" ]
-                [ img [ width 220, src "https://om.svenskaspel.se/AnnualReport/2016/globalassets/spelloggor/svs_keno.png" ] [] ]
-            , div [ class "game-info" ]
-                [ text "Spelstopp: 18:25" ]
-            ]
+        [ renderHeader
         , div [ class "content" ]
             [ div
                 [ class "boards" ]
                 (map renderBoard model.boards)
-            , aside
-                [ class "win-plan" ]
-                [ div
-                    [ class "board-number" ]
-                    [ text "1" ]
-                , div
-                    [ class "win-plan-table" ]
-                    [ div
-                        [ class "win-plan-table-header" ]
-                        [ p [] [ text "Vinstplan" ], text "med radinsats 5kr" ]
-                    ]
-                , div [ class "win-plan-table-body" ]
-                    [ span [] [ text "Antal rätt" ]
-                    , span [ class "f-right" ] [ text "Vinst" ]
-                    , span [ class "f-right" ] [ text "Vinst" ]
-                    , span [] [ text "11" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [] [ text "10" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [] [ text "9" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [] [ text "8" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [] [ text "7" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [] [ text "6" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [] [ text "5" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [] [ text "4" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [] [ text "3" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [] [ text "2" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [] [ text "1" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    , span [ class "f-right" ] [ text "-" ]
-                    ]
-                , div [ class "win-plan-table-footer" ] [ b [] [ text "Kenofestival - " ], text "dubbla toppvinster på Keno 3, 4, 6, 8, 10, 11." ]
-                ]
+            , renderWinPlan
             ]
         ]
 
